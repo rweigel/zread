@@ -1,14 +1,16 @@
 %% read_edi_demo.m
-% READ_EDI_DEMO Script to demonstrate the use of the function read_edi
+% READ_EDI_DEMO Script to demonstrate the use of the function read_edi()
 %  to read the surface impedance data from the edi files created in the SAMTEX campaign
 %  data-source: https://www.mtnet.info/data/samtex/samtex.html
+% 
+% Pierre Cilliers, SANSA Space Science 2020-02-24
 clear
 close all
 
 %% Inputs
 script_path='c:\Users\pjcilliers\Documents\Research\Geomagnetics\MT\';
 data_path='c:\Users\pjcilliers\Documents\Research\Geomagnetics\MT\Data\SAMTEX\';
-edi_file='CPV001.edi';
+edi_file='kap025.edi';
 
 %% Initialize
 addpath(script_path);

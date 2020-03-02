@@ -9,12 +9,12 @@ function S = read_edi(fnamein)
 % Output: Structure S with fields
 %     filename: 'c:\Users\pjcilliers\Documents\Research\Geomagnetics\MT\Data\SAMTEX\bot201.edi'
 %       coords: [-27.0386 27.4167 1444] ; [lat, lon, altitude]
-%           fe: [47Ã—1 double]  frequencies
-%         ZROT: [47Ã—1 double]  Rotation
-%            Z: [47Ã—4 double]  Tensor components of surface impedance [Zxx,Zxy,Zyx,Zyy] complex numbers [mV/km/nT]
-%           ZV: [47Ã—4 double]  Variations of magnitudes [Zxx_var,Zxy_var,Zyx_var,Zyy_var];
-%          TIP: [47Ã—2 double]  Tipper values [TX,TY] complex numbers
-%       TIPVAR: [47Ã—2 double]  Variations in tipper values [TXVAR,TYVAR]
+%           fe: [47×1 double]  frequencies
+%         ZROT: [47×1 double]  Rotation
+%            Z: [47×4 double]  Tensor components of surface impedance [Zxx,Zxy,Zyx,Zyy] complex numbers [mV/km/nT]
+%           ZV: [47×4 double]  Variations of magnitudes [Zxx_var,Zxy_var,Zyx_var,Zyy_var];
+%          TIP: [47×2 double]  Tipper values [TX,TY] complex numbers
+%       TIPVAR: [47×2 double]  Variations in tipper values [TXVAR,TYVAR]
 
     % initialize counters and fields
     ip=1;
@@ -68,11 +68,11 @@ function S = read_edi(fnamein)
                 T = textscan(tline,'%s %f');
                 NFREQ = T{2};
                 fprintf('NFREQ = %i \n',NFREQ);
-                nlines=ceil(NFREQ/5);  % number of lines to read for each field
+%                 nlines=ceil(NFREQ/5);  % number of lines to read for each field
             end
         else % read all the remaining parameters in the edi-file
             if contains(tline,C{ic}) % Read parameter C{ic}
-                [P,ic,ip]=read_field(P,C,D,ic,ip,nlines);
+                [P,ic,ip]=read_field(P,C,D,ic,ip,NFREQ);                
             end
         end
         ip=ip+1;
@@ -109,12 +109,14 @@ function S = read_edi(fnamein)
     S.TIPVAR = TIPVAR;
 end
 
-function [P,ic,ip]=read_field(P,C,D,ic,ip,nlines)
+function [P,ic,ip]=read_field(P,C,D,ic,ip,NFREQ)
     ZV=[];
-    for it=1:nlines
+    Nv=0;
+    while Nv<NFREQ
         ip=ip+1;
         zscan=textscan(D(ip,:),'%f');
         zv=cell2mat(zscan);
+        Nv=Nv+numel(zv);
         ZV=[ZV;zv];
     end
     eval(sprintf('P.%s=ZV;',C{ic}));
