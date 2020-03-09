@@ -49,29 +49,29 @@ function S = read_edi(fnamein)
     while ip<size(D,1)
         tline=D(ip,:);
         % find coordinate lines
-        if contains(tline,'LATITUDE') % Read latitude
+        if ~isempty(strfind(tline,'LATITUDE')) % Read latitude
             T = textscan(tline,'%s %s %f');
             latitude = T{3};
             fprintf('Latitude = %5.2f \n',latitude);
-        elseif contains(tline,'LONGITUDE') % Read longitude
+        elseif ~isempty(strfind(tline,'LONGITUDE')) % Read longitude
             T = textscan(tline,'%s %s %f');
             longitude = T{3};
             fprintf('Longitude = %5.2f \n',longitude);
-        elseif contains(tline,'ELEVATION') % Read altitude
+        elseif ~isempty(strfind(tline,'ELEVATION')) % Read altitude
             T = textscan(tline,'%s %s %f');
             altitude = T{3};
             fprintf('Altitude = %5.2f m\n',altitude);
         end
         % find number of frequencies
         if isempty(NFREQ)
-            if contains(tline,test_str1) % Read number of frequencies                
+            if ~isempty(strfind(tline,test_str1)) % Read number of frequencies                
                 T = textscan(tline,'%s %f');
                 NFREQ = T{2};
                 fprintf('NFREQ = %i \n',NFREQ);
 %                 nlines=ceil(NFREQ/5);  % number of lines to read for each field
             end
         else % read all the remaining parameters in the edi-file
-            if contains(tline,C{ic}) % Read parameter C{ic}
+            if ~isempty(strfind(tline,C{ic})) % Read parameter C{ic}
                 [P,ic,ip]=read_field(P,C,D,ic,ip,NFREQ);                
             end
         end
