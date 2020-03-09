@@ -1,30 +1,30 @@
 function S = read_edi(fnamein)
-% Function to read data from SAMTEX Magnetotellurometer surface impedance files with the extension *.edi
-%   as available on https://www.mtnet.info/data/samtex/samtex.html
+%READ_EDI - Read SAMTEX EDI File
 %
-% Date: 2020-02-29
-% Author:  Pierre Cilliers, SANSA Space Science, Hermanus, South Africa
+%  Function to read data from SAMTEX Magnetotellurometer surface impedance
+%  files with the extension *.edi as available on
+%  https://www.mtnet.info/data/samtex/samtex.html
 %
-% Inputs: fnamein = name of input file with full path
-% Output: Structure S with fields
-%     filename: 'c:\Users\pjcilliers\Documents\Research\Geomagnetics\MT\Data\SAMTEX\bot201.edi'
+%  S = READ_EDI(fname) where fname is the full path of a .edi file
+%
+%  Output: Structure S with fields
+%     filename: '/tmp/zread/data/bot201.edi'
 %       coords: [-27.0386 27.4167 1444] ; [lat, lon, altitude]
-%           fe: [47×1 double]  frequencies
-%         ZROT: [47×1 double]  Rotation
-%            Z: [47×4 double]  Tensor components of surface impedance [Zxx,Zxy,Zyx,Zyy] complex numbers [mV/km/nT]
-%           ZV: [47×4 double]  Variations of magnitudes [Zxx_var,Zxy_var,Zyx_var,Zyy_var];
-%          TIP: [47×2 double]  Tipper values [TX,TY] complex numbers
-%       TIPVAR: [47×2 double]  Variations in tipper values [TXVAR,TYVAR]
+%           fe: [47Ã—1 double]  frequencies
+%         ZROT: [47Ã—1 double]  Rotation
+%            Z: [47Ã—4 double]  Tensor components of surface impedance [Zxx,Zxy,Zyx,Zyy] complex numbers [mV/km/nT]
+%           ZV: [47Ã—4 double]  Variations of magnitudes [Zxx_var,Zxy_var,Zyx_var,Zyy_var];
+%          TIP: [47Ã—2 double]  Tipper values [TX,TY] complex numbers
+%       TIPVAR: [47Ã—2 double]  Variations in tipper values [TXVAR,TYVAR]
+%
+%  Author: Pierre Cilliers, SANSA Space Science, Hermanus, South Africa
+%
+%  See also READ_EDI_DEMO, READ_IDE.
 
     % initialize counters and fields
     ip=1;
     NFREQ=[];
     
-    % derive filename and path to edi file
-    [fpath,fname,fext] = fileparts(fnamein);
-    bs='\';
-    fnamein = sprintf('%s%s%s.edi',fpath,bs,fname);    
-
     % Field labels found in edi file
     C = {'FREQ','ZROT',...
          'ZXXR','ZXXI','ZXX.VAR','ZXYR','ZXYI','ZXY.VAR',...
