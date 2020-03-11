@@ -1,11 +1,12 @@
 function [ ] = MT_Z_plot(MT_site,date_str1,S,xvar,unit_type,save_plot_flag,ide_path)
-% MT_Z_plot Plot of surface impedance components generated from MT data
+% MT_Z_PLOT Plot of surface impedance components generated from MT data
 % by the lemimt software or other software which stores it in the structure S.
 %
 % Author:  Robert S Weigel 2020-02-01 George Mason University, Virginia, USA
 % Revision 2020-02-04 Pierre Cilliers, SANSA Space Science. changed format
 %   to use tight_subplot and added options on x-axis variable and Z-value
 %   units.
+% Revision 2020-03-11 Pierre Cilliers, SANSA Space Science. changed paths to be relative to that of the calling function
 % 
 % Functions used
 %   tight_subplot
@@ -142,8 +143,9 @@ function [ ] = MT_Z_plot(MT_site,date_str1,S,xvar,unit_type,save_plot_flag,ide_p
         set(gcf,'position',[0    0.0463    1.0000    0.8667]);   
 
         if save_plot_flag
-            cd(ide_path);
-            save_file=[S.filename,'.png'];
+%             cd(ide_path);
+            fp=strfind(S.filename,'.');
+            save_file=[S.filename(1:fp-1),'.png'];
             saveas(gcf,save_file,'png');
 %             print('-dpdf',[S.filename,'.pdf']);
 %             print('-dpng',[S.filename,'.png']);

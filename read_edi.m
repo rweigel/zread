@@ -1,5 +1,5 @@
 function S = read_edi(fnamein)
-%READ_EDI - Read SAMTEX EDI File
+%READ_EDI To read SAMTEX EDI File
 %
 %  Function to read data from SAMTEX Magnetotellurometer surface impedance
 %  files with the extension *.edi as available on
