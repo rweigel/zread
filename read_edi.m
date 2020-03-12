@@ -7,15 +7,17 @@ function S = read_edi(fnamein)
 %
 %  S = READ_EDI(fname) where fname is the full path of a .edi file
 %
-%  Output: Structure S with fields
+%  Output: Structure S with fields e.g.
 %     filename: '/tmp/zread/data/bot201.edi'
 %       coords: [-27.0386 27.4167 1444] ; [lat, lon, altitude]
-%           fe: [47×1 double]  frequencies
-%         ZROT: [47×1 double]  Rotation
-%            Z: [47×4 double]  Tensor components of surface impedance [Zxx,Zxy,Zyx,Zyy] complex numbers [mV/km/nT]
-%           ZV: [47×4 double]  Variations of magnitudes [Zxx_var,Zxy_var,Zyx_var,Zyy_var];
-%          TIP: [47×2 double]  Tipper values [TX,TY] complex numbers
-%       TIPVAR: [47×2 double]  Variations in tipper values [TXVAR,TYVAR]
+%           fe: [47x1 double]  frequencies
+%         ZROT: [47x1 double]  Rotation
+%            Z: [47x1 double]  Tensor components of surface impedance [Zxx,Zxy,Zyx,Zyy] complex numbers [mV/km/nT]
+%           ZV: [47x4 double]  Variations of magnitudes [Zxx_var,Zxy_var,Zyx_var,Zyy_var];
+%          TIP: [47x2 double]  Tipper values [TX,TY] complex numbers
+%       TIPVAR: [47x2 double]  Variations in tipper values [TXVAR,TYVAR]
+%
+%  Note: Some edi-files do not have Tipper values
 %
 %  Author: Pierre Cilliers, SANSA Space Science, Hermanus, South Africa
 %
@@ -49,26 +51,29 @@ function S = read_edi(fnamein)
     while ip<size(D,1)
         tline=D(ip,:);
         % find coordinate lines
-        if ~isempty(strfind(tline,'LATITUDE')) % Read latitude
-            T = textscan(tline,'%s %s %f');
-            latitude = T{3};
-            fprintf('Latitude = %5.2f \n',latitude);
-        elseif ~isempty(strfind(tline,'LONGITUDE')) % Read longitude
-            T = textscan(tline,'%s %s %f');
-            longitude = T{3};
+        if ~isempty(strfind(tline,'REFLAT')) % Read latitude
+            fc=strfind(tline,'=');
+            lat_str=tline(fc+1:end);
+            latitude = dms2dd(lat_str);
+            fprintf('Latitude = %5.2f \n',latitude);            
+        elseif ~isempty(strfind(tline,'REFLONG')) % Read longitude
+            fc=strfind(tline,'=');
+            lon_str=tline(fc+1:end);
+            longitude = dms2dd(lon_str);
             fprintf('Longitude = %5.2f \n',longitude);
-        elseif ~isempty(strfind(tline,'ELEVATION')) % Read altitude
-            T = textscan(tline,'%s %s %f');
-            altitude = T{3};
+        elseif ~isempty(strfind(tline,'REFELEV')) % Read altitude
+            fc=strfind(tline,'=');
+            elv_str=tline(fc+1:end);
+            altitude = str2double(elv_str);
             fprintf('Altitude = %5.2f m\n',altitude);
         end
         % find number of frequencies
         if isempty(NFREQ)
             if ~isempty(strfind(tline,test_str1)) % Read number of frequencies                
-                T = textscan(tline,'%s %f');
-                NFREQ = T{2};
+                fc=strfind(tline,'=');
+                freq_str=tline(fc+1:end);
+                NFREQ = str2double(freq_str);
                 fprintf('NFREQ = %i \n',NFREQ);
-%                 nlines=ceil(NFREQ/5);  % number of lines to read for each field
             end
         else % read all the remaining parameters in the edi-file
             if ~isempty(strfind(tline,C{ic})) % Read parameter C{ic}
@@ -97,16 +102,18 @@ function S = read_edi(fnamein)
     ZV(:,3) = P.ZYX.VAR; % Zyx-var
     ZV(:,4) = P.ZYY.VAR; % Zyy-var
     S.ZV=ZV;
-    % Tipper values
-    TIP=zeros(NFREQ,2);
-    TIP(:,1) = complex(P.TXR.EXP,P.TXI.EXP);  % Tx
-    TIP(:,2) = complex(P.TYR.EXP,P.TYI.EXP);  % Ty
-    S.TIP = TIP;
-    % Tipper variations
-    TIPVAR=zeros(NFREQ,2);
-    TIPVAR(:,1) = P.TXVAR.EXP;  % Tx-var
-    TIPVAR(:,2) = P.TYVAR.EXP;  % Ty-var
-    S.TIPVAR = TIPVAR;
+    % Tipper values (if available)
+    if ~isempty(P.TXR.EXP)
+        TIP=zeros(NFREQ,2);
+        TIP(:,1) = complex(P.TXR.EXP,P.TXI.EXP);  % Tx
+        TIP(:,2) = complex(P.TYR.EXP,P.TYI.EXP);  % Ty
+        S.TIP = TIP;
+        % Tipper variations
+        TIPVAR=zeros(NFREQ,2);
+        TIPVAR(:,1) = P.TXVAR.EXP;  % Tx-var
+        TIPVAR(:,2) = P.TYVAR.EXP;  % Ty-var
+        S.TIPVAR = TIPVAR;
+    end
 end
 
 function [P,ic,ip]=read_field(P,C,D,ic,ip,NFREQ)
@@ -121,4 +128,19 @@ function [P,ic,ip]=read_field(P,C,D,ic,ip,NFREQ)
     end
     eval(sprintf('P.%s=ZV;',C{ic}));
     ic=ic+1;
+end
+
+function ddd=dms2dd(s)
+% DMS2DD convert latitude or longitude from string dd:mm:ss to decimal degrees
+    ddd=[];
+    fp=strfind(s,':');
+    sgn = s(1);
+    dd=s(2:fp(1)-1);
+    mm=s(fp(1)+1:fp(2)-1);
+    ss=s(fp(2)+1:end);
+    ddd=eval([dd,'+',mm,'/60+',ss,'/3600']);
+    switch sgn
+        case '-'
+            ddd=-ddd;
+    end
 end
