@@ -1,5 +1,5 @@
 function S = read_edi(fnamein)
-%READ_EDI To read SAMTEX EDI File
+%READ_EDI To read SAMTEX EDI Files
 %
 %  Function to read data from SAMTEX Magnetotellurometer surface impedance
 %  files with the extension *.edi as available on
@@ -44,14 +44,20 @@ function S = read_edi(fnamein)
     
     S = struct();
     S.filename = fnamein;
+    % default type
+    S.type = 'zfile';
     
     % read edi-file as text into file of char
     D = asciiread(fnamein);
 
     while ip<size(D,1)
         tline=D(ip,:);
+        % find if the file contains SPECTA lines
+        if ~isempty(strfind(tline,'>SPECTRA')) % Not a Z-file
+           S.type='spect';
+           return
         % find coordinate lines
-        if ~isempty(strfind(tline,'REFLAT')) % Read latitude
+        elseif ~isempty(strfind(tline,'REFLAT')) % Read latitude
             fc=strfind(tline,'=');
             lat_str=tline(fc+1:end);
             latitude = dms2dd(lat_str);
@@ -81,6 +87,9 @@ function S = read_edi(fnamein)
             end
         end
         ip=ip+1;
+        if ic>numel(C)
+            break
+        end
     end
     % Coordinates
     S.coords=[latitude,longitude,altitude];
@@ -131,11 +140,18 @@ function [P,ic,ip]=read_field(P,C,D,ic,ip,NFREQ)
 end
 
 function ddd=dms2dd(s)
-% DMS2DD convert latitude or longitude from string dd:mm:ss to decimal degrees
+% DMS2DD convert latitude or longitude from string +dd:mm:ss to decimal degrees
     ddd=[];
     fp=strfind(s,':');
-    sgn = s(1);
-    dd=s(2:fp(1)-1);
+    % check if first character is '-'
+    sgn_found=strcmp(s(1),'-') | strcmp(s(1),'+');
+    if sgn_found
+        sgn = s(1);
+        dd=s(2:fp(1)-1);
+    else
+        sgn='+';
+        dd=s(1:fp(1)-1);
+    end
     mm=s(fp(1)+1:fp(2)-1);
     ss=s(fp(2)+1:end);
     ddd=eval([dd,'+',mm,'/60+',ss,'/3600']);
