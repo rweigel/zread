@@ -3,6 +3,15 @@ function S = read_ide(fnamein)
 %
 %  S = READ_EDI(fname) where fname is the full path of a .ide file
 %
+%  Output: Structure S with fields e.g.
+%     filename: '/tmp/zread/data/bot201.edi'
+%       coords: [-27.0386 27.4167 1444] ; [lat, lon, altitude]
+%           fe: [47x1 double]  frequencies
+%         ZROT: [47x1 double]  Rotation
+%            Z: [47x1 double]  Tensor components of surface impedance [Zxx,Zxy,Zyx,Zyy] complex numbers [mV/km/nT]
+%           ZV: [47x4 double]  Variations of magnitudes [Zxx_var,Zxy_var,Zyx_var,Zyy_var];
+%          TIP: [47x2 double]  Tipper values [TX,TY] complex numbers
+%       TIPVAR: [47x2 double]  Variations in tipper values [TXVAR,TYVAR]
 % See also READ_IDE_DEMO.
 
 % Column labels found in file
@@ -10,6 +19,16 @@ C = {'FREQ','ZROT',...
      'ZXXR','ZXXI','ZXX_VAR','ZXYR','ZXYI','ZXY_VAR',...
      'ZYXR','ZYXI','ZYX_VAR','ZYYR','ZYYI','ZYY_VAR',...
      'TXR.EXP','TXI.EXP','TXVAR.EXP','TYR.EXP','TYI.EXP','TYVAR.EXP'};
+
+% Read the headerlines and extract coordinates
+fid=fopen(fnamein,'r');
+hline=fgetl(fid);
+p_lat=strfind(hline,'LAT:');
+p_lon=strfind(hline,'LONG:');
+latitude=str2double(hline(p_lat+4:p_lat+12));
+longitude=str2double(hline(p_lon+6:p_lon+14));
+altitude=0;
+fclose(fid);
 
 D = importdata(fnamein,' ', 3);
 D = D.data;
@@ -45,6 +64,7 @@ end
 
 S = struct();
 S.filename = fnamein;
+S.coords=[latitude,longitude,altitude];
 S.fe = F;
 S.Z = Z;
 switch size(D,2)
