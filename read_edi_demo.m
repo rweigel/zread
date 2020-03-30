@@ -6,8 +6,6 @@
 %% Input
 % Full path of .ide file
 edi_file = [fileparts(mfilename('fullpath')),'/data/bot201.edi'];
-m_path = [fileparts(mfilename('fullpath')),'/m/'];
-addpath(m_path);
 
 %% Read edi file
 S = read_edi(edi_file);

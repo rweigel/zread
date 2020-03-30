@@ -22,6 +22,9 @@ function S = read_edi(fnamein)
 %  Author: Pierre Cilliers, SANSA Space Science, Hermanus, South Africa
 %
 %  See also READ_EDI_DEMO, READ_IDE.
+			     
+    m_path = [fileparts(mfilename('fullpath')),'/m/'];
+    addpath(m_path);
 
     % initialize counters and fields
     ip=1;

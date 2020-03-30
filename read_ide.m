@@ -14,6 +14,9 @@ function S = read_ide(fnamein)
 %       TIPVAR: [47x2 double]  Variations in tipper values [TXVAR,TYVAR]
 % See also READ_IDE_DEMO.
 
+m_path = [fileparts(mfilename('fullpath')),'/m/'];
+addpath(m_path);
+
 % Column labels found in file
 C = {'FREQ','ZROT',...
      'ZXXR','ZXXI','ZXX_VAR','ZXYR','ZXYI','ZXY_VAR',...
