@@ -5,6 +5,14 @@ function S = read_edi(fnamein)
 %  files with the extension *.edi as available on
 %  https://www.mtnet.info/data/samtex/samtex.html
 %
+%  The EDI format is documented at 
+%  http://www.mtnet.info/docs/ediformat.txt
+%  https://seg.org/Portals/0/SEG/News%20and%20Resources/Technical%20Standards/seg_mt_emap_1987.pdf
+%  
+%  Other (probably more general) MATLAB code for reading EDI files is 
+%  available in load_edi.tar.gz at
+%  https://sites.ualberta.ca/~unsworth/codes/codes_index.html
+%
 %  S = READ_EDI(fname) where fname is the full path of a .edi file
 %
 %  Output: Structure S with fields e.g.
