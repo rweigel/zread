@@ -8,8 +8,7 @@
 %% Input
 % Full path of .ide file
 ide_file = [fileparts(mfilename('fullpath')),'/data/MT_Middelpos_20120712.ide'];
-m_path = [fileparts(mfilename('fullpath')),'/m/'];
-addpath(m_path);
+ide_file = [fileparts(mfilename('fullpath')),'/mtnet.info/samtex/Final_with_DeBeers/edi_files/KAP03/kap003.edi'];
 
 %% Read ide file
 S = read_ide(ide_file);

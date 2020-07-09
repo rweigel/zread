@@ -23,6 +23,9 @@ function S = read_edi(fnamein)
 %
 %  See also READ_EDI_DEMO, READ_IDE.
 
+    m_path = [fileparts(mfilename('fullpath')),'/m/'];
+    addpath(m_path);
+
     % initialize counters and fields
     ip=1;
     NFREQ=[];
@@ -61,17 +64,17 @@ function S = read_edi(fnamein)
             fc=strfind(tline,'=');
             lat_str=tline(fc+1:end);
             latitude = dms2dd(lat_str);
-            fprintf('Latitude = %5.2f \n',latitude);            
+            %fprintf('Latitude = %5.2f \n',latitude);            
         elseif ~isempty(strfind(tline,'REFLONG')) % Read longitude
             fc=strfind(tline,'=');
             lon_str=tline(fc+1:end);
             longitude = dms2dd(lon_str);
-            fprintf('Longitude = %5.2f \n',longitude);
+            %fprintf('Longitude = %5.2f \n',longitude);
         elseif ~isempty(strfind(tline,'REFELEV')) % Read altitude
             fc=strfind(tline,'=');
             elv_str=tline(fc+1:end);
             altitude = str2double(elv_str);
-            fprintf('Altitude = %5.2f m\n',altitude);
+            %fprintf('Altitude = %5.2f m\n',altitude);
         end
         % find number of frequencies
         if isempty(NFREQ)
@@ -79,7 +82,7 @@ function S = read_edi(fnamein)
                 fc=strfind(tline,'=');
                 freq_str=tline(fc+1:end);
                 NFREQ = str2double(freq_str);
-                fprintf('NFREQ = %i \n',NFREQ);
+                %fprintf('NFREQ = %i \n',NFREQ);
             end
         else % read all the remaining parameters in the edi-file
             if ~isempty(strfind(tline,C{ic})) % Read parameter C{ic}
