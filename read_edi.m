@@ -119,12 +119,12 @@ function S = read_edi(fnamein)
     Z(:,4) = complex(P.ZYYR,P.ZYYI);  % Zyy 
     S.Z = Z;
     % Variations
-    ZV=zeros(NFREQ,4);
-    ZV(:,1) = P.ZXX.VAR; % Zxx-var
-    ZV(:,2) = P.ZXY.VAR; % Zxy-var
-    ZV(:,3) = P.ZYX.VAR; % Zyx-var
-    ZV(:,4) = P.ZYY.VAR; % Zyy-var
-    S.ZV=ZV;
+    ZVAR=zeros(NFREQ,4);
+    ZVAR(:,1) = P.ZXX.VAR; % Zxx-var
+    ZVAR(:,2) = P.ZXY.VAR; % Zxy-var
+    ZVAR(:,3) = P.ZYX.VAR; % Zyx-var
+    ZVAR(:,4) = P.ZYY.VAR; % Zyy-var
+    S.ZVAR = ZVAR;
     % Tipper values (if available)
     if ~isempty(P.TXR.EXP)
         TIP=zeros(NFREQ,2);
