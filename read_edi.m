@@ -40,7 +40,7 @@ function S = read_edi(fnamein)
     % initialize counters and fields
     ip=1;
     NFREQ=[];
-    
+
     % Field labels found in edi file
     C = {'FREQ','ZROT',...
          'ZXXR','ZXXI','ZXX.VAR','ZXYR','ZXYI','ZXY.VAR',...
