@@ -3,7 +3,7 @@ function S = read_ide(fnamein)
 %
 %  S = READ_EDI(fname) where fname is the full path of a .ide file
 %
-%  Output: Structure S with fields e.g.
+%  Output: Structure S with fields, e.g.
 %     filename: '/tmp/zread/data/bot201.edi'
 %       coords: [-27.0386 27.4167 1444] ; [lat, lon, altitude]
 %           fe: [47x1 double]  frequencies
@@ -12,6 +12,7 @@ function S = read_ide(fnamein)
 %           ZV: [47x4 double]  Variations of magnitudes [Zxx_var,Zxy_var,Zyx_var,Zyy_var];
 %          TIP: [47x2 double]  Tipper values [TX,TY] complex numbers
 %       TIPVAR: [47x2 double]  Variations in tipper values [TXVAR,TYVAR]
+%
 % See also READ_IDE_DEMO.
 
 m_path = [fileparts(mfilename('fullpath')),'/m/'];
@@ -23,14 +24,14 @@ C = {'FREQ','ZROT',...
      'ZYXR','ZYXI','ZYX_VAR','ZYYR','ZYYI','ZYY_VAR',...
      'TXR.EXP','TXI.EXP','TXVAR.EXP','TYR.EXP','TYI.EXP','TYVAR.EXP'};
 
-% Read the headerlines and extract coordinates
-fid=fopen(fnamein,'r');
-hline=fgetl(fid);
-p_lat=strfind(hline,'LAT:');
-p_lon=strfind(hline,'LONG:');
-latitude=str2double(hline(p_lat+4:p_lat+12));
-longitude=str2double(hline(p_lon+6:p_lon+14));
-altitude=0;
+% Read the header lines and extract coordinates
+fid = fopen(fnamein,'r');
+hline = fgetl(fid);
+p_lat = strfind(hline,'LAT:');
+p_lon = strfind(hline,'LONG:');
+latitude = str2double(hline(p_lat+4:p_lat+12));
+longitude = str2double(hline(p_lon+6:p_lon+14));
+altitude = 0;
 fclose(fid);
 
 D = importdata(fnamein,' ', 3);

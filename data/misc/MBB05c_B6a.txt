@@ -1,0 +1,4 @@
+Sample file downloaded on 10-1-2015 from
+  http://ds.iris.edu/spudservice/data/1418020
+which is linked to from
+  http://ds.iris.edu/spud/emtf/1418021
