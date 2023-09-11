@@ -37,6 +37,8 @@ function S = read_edi(fnamein)
     m_path = [fileparts(mfilename('fullpath')),'/m/'];
     addpath(m_path);
 
+    assert(exist(fnamein,'file'),sprintf('%s not found',fnamein))
+     
     % initialize counters and fields
     ip=1;
     NFREQ=[];
